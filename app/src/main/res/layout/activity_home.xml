@@ -28,10 +28,15 @@
         android:clickable="true"
         app:srcCompat="@android:drawable/ic_input_add" />
 
-    <ListView
+    <GridView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:dividerHeight="1dp"
+        android:numColumns="2"
+        android:divider="@color/cardview_dark_background"
+        />
+
 
 
 </RelativeLayout>
