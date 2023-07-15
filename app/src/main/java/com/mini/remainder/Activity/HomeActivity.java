@@ -45,7 +45,6 @@ public class HomeActivity extends MainActivity {
                 }while(c1.moveToNext());
 
         }
-//jkjkjjkjkkjjk
         GridAdapter gridAdapter=new GridAdapter(HomeActivity.this,a_title,b_title);
         gridView.setAdapter(gridAdapter);
         ImageView a=(ImageView)findViewById(R.id.image_empty) ;
