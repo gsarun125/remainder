@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:configChanges="orientation|screenSize|keyboardHidden"
     tools:context=".Activity.HomeActivity">
 
     <ImageView
@@ -28,15 +29,11 @@
         android:clickable="true"
         app:srcCompat="@android:drawable/ic_input_add" />
 
-    <GridView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:dividerHeight="1dp"
-        android:numColumns="2"
-        android:divider="@color/cardview_dark_background"
         />
-
 
 
 </RelativeLayout>

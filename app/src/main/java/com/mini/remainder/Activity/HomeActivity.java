@@ -4,16 +4,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Toast;
+
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mini.remainder.R;
-import com.mini.remainder.model.GridAdapter;
+import com.mini.remainder.model.NoteAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +18,7 @@ import java.util.List;
 
 public class HomeActivity extends MainActivity {
 
-    GridView gridView;
+    RecyclerView recyclerView;
     List<String> a_title = new ArrayList();
     List<String> b_title=new ArrayList();
 
@@ -31,7 +28,7 @@ public class HomeActivity extends MainActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         FloatingActionButton add = (FloatingActionButton) findViewById(R.id.add);
-        gridView = findViewById(R.id.list);
+        recyclerView = findViewById(R.id.list);
 
 
         Cursor c1 = getDb().getData();
@@ -45,15 +42,21 @@ public class HomeActivity extends MainActivity {
                 }while(c1.moveToNext());
 
         }
-        GridAdapter gridAdapter=new GridAdapter(HomeActivity.this,a_title,b_title);
-        gridView.setAdapter(gridAdapter);
+
+
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+        NoteAdapter noteAdapter=new NoteAdapter(HomeActivity.this,a_title,b_title);
+        recyclerView.setAdapter(noteAdapter);
+        /*
         ImageView a=(ImageView)findViewById(R.id.image_empty) ;
         gridView.setEmptyView(a);
 
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+ */
+
+        recyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onClick(View view) {
 
             }
         });
