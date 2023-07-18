@@ -24,7 +24,7 @@ class DataBaseHandler(var context: Context) : SQLiteOpenHelper(context, DATABASE
         //onCreate(db);
     }
 
-    fun insertData( title: String, date: String) {
+    fun insertData( title: String, date: Long) {
         val database = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(COL_TITLE, title)
@@ -39,7 +39,8 @@ class DataBaseHandler(var context: Context) : SQLiteOpenHelper(context, DATABASE
 
     fun getData(): Cursor? {
         val db = this.writableDatabase
-        val query = "SELECT * FROM $TABLENAME"
+        val query = "SELECT * FROM $TABLENAME ORDER BY $COL_DATE ASC;"
+
         return db.rawQuery(query, null)
     }
 }

@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Activity.MainActivity">
 
-
-
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="550dp"
         android:layout_height="100dp"
