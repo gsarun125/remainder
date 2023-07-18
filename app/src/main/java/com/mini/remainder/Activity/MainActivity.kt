@@ -12,6 +12,8 @@ import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -25,13 +27,13 @@ import java.util.Date
 import java.util.TimeZone
 
 
-open class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity(){
 
 
     val NOTIFICATION_CHANNEL_ID = "10001"
     private val default_notification_channel_id = "default"
 
-    lateinit var binding:ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     var alarmManager: AlarmManager? = null
     var pendingIntent: PendingIntent? = null
@@ -41,6 +43,7 @@ open class MainActivity : AppCompatActivity() {
     var D:Int=0
     var H:Int=0
     var Min:Int=0
+     var time:Long = 0
     lateinit var date:String
 
     val context = this
@@ -56,22 +59,31 @@ open class MainActivity : AppCompatActivity() {
     }
     private  fun  insert(){
 
-             binding.date.editText?.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker().build()
-            datePicker.addOnPositiveButtonClickListener {
-                val timeZone = TimeZone.getDefault()
-                val offset = timeZone.getOffset(Date().time) * -1
-                date=  Date(it + offset).format(0)
+        binding.date.editText?.setOnClickListener {
 
-                D=  Date(it + offset).format(1).toInt()
-                M=  Date(it + offset).format(2).toInt()
-                Y=  Date(it + offset).format(3).toInt()
+
+            val calendarConstraintBuilder = CalendarConstraints.Builder()
+            calendarConstraintBuilder.setValidator(DateValidatorPointForward.now())
+            val materialDatePickerBuilder: MaterialDatePicker.Builder<*> =
+                MaterialDatePicker.Builder.datePicker()
+            materialDatePickerBuilder.setTitleText("SELECT A DATE")
+            materialDatePickerBuilder.setCalendarConstraints(calendarConstraintBuilder.build())
+            val materialDatePicker = materialDatePickerBuilder.build()
+
+            materialDatePicker.addOnPositiveButtonClickListener {
+
+                date=  Date().format(0)
+
+                println(date)
+                D=  Date().format(1).toInt()
+                M=  Date().format(2).toInt()
+                Y=  Date().format(3).toInt()
 
                 binding.date.editText?.setText(date)
 
             }
 
-            datePicker.show(supportFragmentManager, "DATE_PICKER_TAG")
+            materialDatePicker.show(supportFragmentManager, "DATE_PICKER_TAG")
         }
         binding.time.editText?.setOnClickListener {
             val timePicker=MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H).build()
@@ -85,7 +97,7 @@ open class MainActivity : AppCompatActivity() {
                     "0${timePicker.hour}"
                 else
                     timePicker.hour
-                val time:String="${hour}:${minute}"
+                val time="${hour}:${minute}"
 
                 H=hour.toString().toInt()
                 Min=minute.toString().toInt()
@@ -101,7 +113,6 @@ open class MainActivity : AppCompatActivity() {
 
 
             println(Title)
-
             println(D)
             println(M)
             println(Y)
@@ -110,11 +121,13 @@ open class MainActivity : AppCompatActivity() {
 
             if (D!=0 && M!=0 && Y!=0 && (H!=0 || Min!=0) && Title!=null)
             {
-                db.insertData(Title,date)
 
                 set(getNotification(Title),D,M,Y,H,Min)
 
-                restartActivity(HomeActivity())
+                db.insertData(Title,time)
+
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
 
             }
             else{
@@ -123,8 +136,6 @@ open class MainActivity : AppCompatActivity() {
         }
 
     }
-
-
 
     @SuppressLint("RemoteViewLayout")
     private fun getNotification(title:String): Notification {
@@ -159,7 +170,7 @@ open class MainActivity : AppCompatActivity() {
 
         calender.set(Y,M-1,D,H,Min)
 
-        val time: Long = calender.getTimeInMillis() - calender.getTimeInMillis() % 60000
+        time = calender.getTimeInMillis() - calender.getTimeInMillis() % 60000
         println(calender.getTimeInMillis())
 
 
@@ -172,7 +183,8 @@ open class MainActivity : AppCompatActivity() {
         alarmManager!!.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent)
 
 
-        val formatter = SimpleDateFormat("dd MMM yyyy HH:mm:ss")
+        val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa")
+
         dateString = formatter.format(Date(time))
         Toast.makeText(applicationContext, dateString, Toast.LENGTH_LONG).show()
 
@@ -200,5 +212,4 @@ open class MainActivity : AppCompatActivity() {
         else
             return SimpleDateFormat("yyyy").format(this)
     }
-
 }

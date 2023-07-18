@@ -4,26 +4,28 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.mini.remainder.R;
-import com.mini.remainder.model.GridAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.mini.remainder.NoteClickListenter;
+import com.mini.remainder.R;
+import com.mini.remainder.model.NoteAdapter;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
-public class HomeActivity extends MainActivity {
+public class HomeActivity extends MainActivity implements NoteClickListenter {
 
-    GridView gridView;
-    List<String> a_title = new ArrayList();
-    List<String> b_title=new ArrayList();
+    RecyclerView recyclerView;
+    List<String> mTitle = new ArrayList();
+    List<String> mDate=new ArrayList();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -31,32 +33,36 @@ public class HomeActivity extends MainActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         FloatingActionButton add = (FloatingActionButton) findViewById(R.id.add);
-        gridView = findViewById(R.id.list);
+        recyclerView = findViewById(R.id.list);
 
+
+
+        DateFormat obj = new SimpleDateFormat("dd/MM/yyyy hh:mm aa");
 
         Cursor c1 = getDb().getData();
         if (c1.moveToFirst()) {
                 do{
                     @SuppressLint("Range") String data = c1.getString(c1.getColumnIndex("title"));
                     @SuppressLint("Range") String data1 = c1.getString(c1.getColumnIndex("date"));
-                    a_title.add(data);
-                    b_title.add(data1);
+                    long l=Long.parseLong(data1);
+                    Date res = new Date(l);
+
+                    mTitle.add(data);
+                    mDate.add(obj.format(res).toString());
 
                 }while(c1.moveToNext());
 
         }
-        GridAdapter gridAdapter=new GridAdapter(HomeActivity.this,a_title,b_title);
-        gridView.setAdapter(gridAdapter);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+        NoteAdapter noteAdapter=new NoteAdapter(this,HomeActivity.this,mTitle,mDate);
+        recyclerView.setAdapter(noteAdapter);
+
+        /*
         ImageView a=(ImageView)findViewById(R.id.image_empty) ;
         gridView.setEmptyView(a);
 
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-            }
-        });
+ */
 
            /* ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, a);
             l.setAdapter(arrayAdapter);
@@ -74,4 +80,18 @@ public class HomeActivity extends MainActivity {
                 }
             });
     }
+
+
+    @Override
+    public void onClick(String Title,String date) {
+        Toast.makeText(this,Title,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,date,Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void OnLongClick(String position) {
+        Toast.makeText(this,position,Toast.LENGTH_SHORT).show();
+    }
+
 }
