@@ -16,18 +16,17 @@
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="30dp"
         card_view:cardPreventCornerOverlap="false"
-        android:minWidth="150dp"
+        android:minWidth="200dp"
         android:minHeight="100dp"
         card_view:cardElevation="30dp">
         <TextView
             android:id="@+id/Date"
-            android:layout_width="match_parent"
-            android:textSize="9sp"
+            android:layout_width="200dp"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
 
-            android:text="hjhjhjh"
             android:layout_height="30dp"/>
         <TextView
             android:id="@+id/grid_title"

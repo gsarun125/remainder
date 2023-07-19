@@ -3,12 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#CAD5E2"
     android:layout_height="match_parent"
     tools:context=".Activity.MainActivity">
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/onboardingViewPager"
+        android:layout_width="350dp"
+        android:layout_height="500dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/view"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="550dp"
-        android:layout_height="100dp"
+        android:id="@+id/textinput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="550dp"
+        android:maxHeight="200dp"
+
+
+        app:boxCornerRadiusBottomEnd="30dp"
+        app:boxCornerRadiusBottomStart="30dp"
+        app:boxCornerRadiusTopStart="30dp"
+        app:boxCornerRadiusTopEnd="30dp"
+
+
         android:layout_marginStart="36dp"
         android:layout_marginTop="76dp"
         android:layout_marginEnd="36dp"
@@ -19,7 +40,11 @@
         <EditText
             android:id="@+id/alertTitle"
             android:layout_width="match_parent"
-            android:layout_height="89dp"
+            android:layout_height="wrap_content"
+            android:minHeight="200dp"
+           android:gravity="start"
+            android:maxHeight="200dp"
+            android:textColor="@color/white"
 
             android:textSize="25sp" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -29,13 +54,20 @@
         android:layout_width="160dp"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="250dp"
+
+        app:boxCornerRadiusBottomEnd="30dp"
+        app:boxCornerRadiusBottomStart="30dp"
+        app:boxCornerRadiusTopStart="30dp"
+        app:boxCornerRadiusTopEnd="30dp"
+
+
+
         android:layout_marginLeft="36dp"
-        app:startIconDrawable="@drawable/ic_date"
+        android:layout_marginTop="350dp"
         android:hint="Date"
 
 
-        >
+        app:startIconDrawable="@drawable/ic_date">
 
         <com.google.android.material.textfield.TextInputEditText
 
@@ -43,6 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
+            android:textColor="@color/white"
             android:focusable="false"
             android:inputType="none" />
 
@@ -50,12 +83,18 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/time"
-        android:layout_width="120dp"
-        android:layout_height="70dp"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+
+
+        app:boxCornerRadiusBottomEnd="30dp"
+        app:boxCornerRadiusBottomStart="30dp"
+        app:boxCornerRadiusTopStart="30dp"
+        app:boxCornerRadiusTopEnd="30dp"
 
         android:layout_marginStart="205dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="250dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="350dp"
         android:hint="Time"
 
         app:startIconDrawable="@drawable/ic_timer">
@@ -66,6 +105,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
+            android:textColor="@color/white"
             android:focusable="false"
             android:inputType="none"/>
     </com.google.android.material.textfield.TextInputLayout>

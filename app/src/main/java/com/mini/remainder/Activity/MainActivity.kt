@@ -1,12 +1,11 @@
 package com.mini.remainder.Activity
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
-import android.os.Build
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.Toast
@@ -24,7 +23,7 @@ import com.mini.remainder.model.AlertReceiver
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.TimeZone
+import java.util.Locale
 
 
 open class MainActivity : AppCompatActivity(){
@@ -52,12 +51,21 @@ open class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         insert()
     }
     private  fun  insert(){
+
+
+      ///  materialDatePicker.addOnPositiveButtonClickListener(
+         ///   MaterialPickerOnPositiveButtonClickListener<Any?> { // now update the selected date preview
+            ///    mShowSelectedDateText.setText("Selected Date is : " + materialDatePicker.getHeaderText())
+            //})
+
 
         binding.date.editText?.setOnClickListener {
 
@@ -72,12 +80,19 @@ open class MainActivity : AppCompatActivity(){
 
             materialDatePicker.addOnPositiveButtonClickListener {
 
-                date=  Date().format(0)
+                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val date = sdf.format(it)
 
-                println(date)
-                D=  Date().format(1).toInt()
-                M=  Date().format(2).toInt()
-                Y=  Date().format(3).toInt()
+                //date=  materialDatePicker.getHeaderText().format(0)
+                //println(date)
+
+                val sdf1 = SimpleDateFormat("dd", Locale.getDefault())
+                val sdf2 = SimpleDateFormat("MM", Locale.getDefault())
+                val sdf3 = SimpleDateFormat("yyyy", Locale.getDefault())
+
+                D=  sdf1.format(it).toInt()
+                M=  sdf2.format(it).toInt()
+                Y=  sdf3.format(it).toInt()
 
                 binding.date.editText?.setText(date)
 
@@ -119,9 +134,8 @@ open class MainActivity : AppCompatActivity(){
             println(H)
             println(Min)
 
-            if (D!=0 && M!=0 && Y!=0 && (H!=0 || Min!=0) && Title!=null)
+            if (D!=0 && M!=0 && Y!=0 && (H!=0 || Min!=0))
             {
-
                 set(getNotification(Title),D,M,Y,H,Min)
 
                 db.insertData(Title,time)
@@ -189,15 +203,6 @@ open class MainActivity : AppCompatActivity(){
         Toast.makeText(applicationContext, dateString, Toast.LENGTH_LONG).show()
 
 
-    }
-
-    open fun restartActivity(activity: Activity) {
-        if (Build.VERSION.SDK_INT >= 11) {
-            activity.recreate()
-        } else {
-            activity.finish()
-            activity.startActivity(activity.intent)
-        }
     }
 
 
