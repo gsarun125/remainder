@@ -1,17 +1,18 @@
 package com.mini.remainder.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
-import com.mini.remainder.NoteClickListenter;
 import com.mini.remainder.R;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NoteAdapter.NoteViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NoteAdapter.NoteViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         holder.grid_title.setText(title.get(position));
         holder.grid_title.setSelected(true);
@@ -45,22 +46,39 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         System.out.println("color_code"+color_code);
         holder.card.setCardBackgroundColor(holder.itemView.getResources().getColor(color.get(color_code),null));
 
+        setAnimation(holder.itemView, position);
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listenter.onClick(title.get(position),date.get(position));
+                String i= id.get(position);
+                listenter.onClick(title.get(position),date.get(position),i);
             }
         });
         holder.card.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                listenter. OnLongClick(date.get(position));
+                String i= id.get(position);
+                title.clear();
+                id.clear();
+                date.clear();
+                listenter. OnLongClick(i);
 
                 return true;
             }
         });
 
 
+    }
+    private int lastPosition = -1;
+
+    private void setAnimation(View viewToAnimate, int position) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            anim.setDuration(1000);
+            viewToAnimate.startAnimation(anim);
+            lastPosition = position;
+        }
     }
 
     private int getRandomColour(){
@@ -84,7 +102,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     }
 
 
-    public  class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public  class NoteViewHolder extends RecyclerView.ViewHolder  {
 
 
         MaterialCardView card;
@@ -99,23 +117,20 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
 
         }
-
-        @Override
-        public void onClick(View view) {
-            Log.d("ClickFromViewHolder", "Clicked");
-        }
     }
     private NoteClickListenter listenter;
-    public NoteAdapter(NoteClickListenter listenter, Context context, List<String> title, List<String> date) {
+    public NoteAdapter(NoteClickListenter listenter, Context context, List<String> title, List<String> date,List<String> id) {
         this.listenter=listenter;
         this.context = context;
         this.title = title;
         this.date = date;
+        this.id=id;
     }
 
     Context context;
     List<String> title = new ArrayList();
     List<String> date = new ArrayList();
+    List<String> id = new ArrayList();
 
 
 }
