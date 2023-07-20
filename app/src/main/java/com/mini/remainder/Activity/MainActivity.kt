@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.Random
 
 
 open class MainActivity : AppCompatActivity(){
@@ -113,11 +114,31 @@ open class MainActivity : AppCompatActivity(){
                 else
                     timePicker.hour
                 val time="${hour}:${minute}"
+                val datetime = Calendar.getInstance()
+                val c = Calendar.getInstance()
+                if (D!=0 && M!=0 && Y!=0) {
+                    datetime[Calendar.DATE] = D
+                    datetime[Calendar.MONTH] = M - 1
+                    datetime[Calendar.YEAR] = Y
+                    datetime[Calendar.HOUR_OF_DAY] = hour.toString().toInt()
+                    datetime[Calendar.MINUTE] = minute.toString().toInt()
 
-                H=hour.toString().toInt()
-                Min=minute.toString().toInt()
+                if (datetime.getTimeInMillis() >= c.getTimeInMillis()) {
 
-                binding.time.editText?.setText(time)
+                    H = hour.toString().toInt()
+                    Min = minute.toString().toInt()
+                    binding.time.editText?.setText(time)
+
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Invalid Time", Toast.LENGTH_LONG).show();
+                }
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Enter the Date", Toast.LENGTH_LONG).show();
+                }
 
             }
             timePicker.show(supportFragmentManager, null)
@@ -136,9 +157,24 @@ open class MainActivity : AppCompatActivity(){
 
             if (D!=0 && M!=0 && Y!=0 && (H!=0 || Min!=0))
             {
-                set(getNotification(Title),D,M,Y,H,Min)
+                val calender=Calendar.getInstance()
+                println(D)
+                println(M)
+                println(Y)
+                calender.set(Y,M-1,D,H,Min)
+                time = calender.getTimeInMillis() - calender.getTimeInMillis() % 60000
+                println(calender.getTimeInMillis())
 
-                db.insertData(Title,time)
+
+                var random = Random()
+                var Request_ID=random.nextInt(50)
+
+                db.insertData(Title,time,Request_ID)
+
+                println(Request_ID)
+                set(getNotification(Title,Request_ID),time,Request_ID)
+
+
 
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
@@ -152,13 +188,16 @@ open class MainActivity : AppCompatActivity(){
     }
 
     @SuppressLint("RemoteViewLayout")
-    private fun getNotification(title:String): Notification {
+
+    private fun getNotification(title:String,Request_ID:Int): Notification {
 
 
+        println(Request_ID);
 
         val intent = Intent(this, ShowActivity::class.java)
         intent.putExtra("a",title)
-        val pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(this, Request_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
 
         var contentView = RemoteViews(packageName, R.layout.notify)
         contentView.setImageViewResource(R.id.image, R.drawable.pic)
@@ -176,25 +215,17 @@ open class MainActivity : AppCompatActivity(){
 
     }
 
-    fun set(a:Notification,D:Int,M:Int,Y:Int,H:Int,Min: Int){
-        val calender=Calendar.getInstance()
-        println(D)
-        println(M)
-        println(Y)
+    fun set(a:Notification,time:Long,Request_ID: Int){
 
-        calender.set(Y,M-1,D,H,Min)
-
-        time = calender.getTimeInMillis() - calender.getTimeInMillis() % 60000
-        println(calender.getTimeInMillis())
-
+        println(Request_ID);
 
 
         alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AlertReceiver::class.java)
         intent.putExtra(AlertReceiver. NOTIFICATION_ID , 1 )
         intent.putExtra(AlertReceiver. NOTIFICATION , a)
-        pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_IMMUTABLE)
-        alarmManager!!.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+        pendingIntent = PendingIntent.getBroadcast(this,Request_ID , intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManager!!.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
 
 
         val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa")
@@ -204,17 +235,13 @@ open class MainActivity : AppCompatActivity(){
 
 
     }
-
-
-    fun Date.format(i:Int ): String {
-
-        if (i==0)
-            return SimpleDateFormat("dd/MM/yyyy").format(this)
-        else if (i==1)
-            return SimpleDateFormat("dd").format(this)
-        else if(i==2)
-            return SimpleDateFormat("MM").format(this)
-        else
-            return SimpleDateFormat("yyyy").format(this)
+    fun cancel(Request_ID: Int) {
+        println(Request_ID)
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val myIntent = Intent(applicationContext, AlertReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(applicationContext, Request_ID, myIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManager.cancel(pendingIntent)
     }
+
+
 }

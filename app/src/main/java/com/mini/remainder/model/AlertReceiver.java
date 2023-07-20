@@ -10,7 +10,7 @@ public class AlertReceiver extends BroadcastReceiver  {
 
     public static String NOTIFICATION_ID = "notification-id" ;
     public static String NOTIFICATION = "notification" ;
-    public static String NOTIFICATION_CHANNEL_ID = "10001";
+   public static String NOTIFICATION_CHANNEL_ID = "10001";
     @Override
     public void onReceive(Context context, Intent intent) {
         System.out.println("dddd122333");
@@ -20,7 +20,7 @@ public class AlertReceiver extends BroadcastReceiver  {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         if (android.os.Build.VERSION. SDK_INT >= android.os.Build.VERSION_CODES. O ) {
             int importance = NotificationManager. IMPORTANCE_HIGH ;
-            NotificationChannel notificationChannel = new NotificationChannel( NOTIFICATION_CHANNEL_ID , "NOTIFICATION_CHANNEL_NAME" , importance) ;
+            NotificationChannel notificationChannel = new NotificationChannel( NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME" , importance) ;
             assert notificationManager != null;
             notificationManager.createNotificationChannel(notificationChannel) ;
         }

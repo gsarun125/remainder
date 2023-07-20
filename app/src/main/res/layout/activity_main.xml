@@ -8,7 +8,7 @@
     tools:context=".Activity.MainActivity">
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/onboardingViewPager"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="500dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/view"
