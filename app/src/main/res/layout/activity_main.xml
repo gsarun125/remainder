@@ -6,14 +6,15 @@
     android:background="#CAD5E2"
     android:layout_height="match_parent"
     tools:context=".Activity.MainActivity">
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/onboardingViewPager"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/view"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        android:layout_alignBottom="@+id/set"
+
+        android:layout_marginBottom="141dp"
+        android:background="@drawable/view" />
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:minWidth="550dp"
         android:maxHeight="200dp"
+        android:textColorHint="@color/white"
 
 
         app:boxCornerRadiusBottomEnd="30dp"
@@ -29,7 +31,7 @@
         app:boxCornerRadiusTopStart="30dp"
         app:boxCornerRadiusTopEnd="30dp"
 
-
+        app:boxStrokeWidth="3dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="76dp"
         android:layout_marginEnd="36dp"
@@ -54,13 +56,13 @@
         android:layout_width="160dp"
         android:layout_height="wrap_content"
 
-
+        android:textColorHint="@color/white"
         app:boxCornerRadiusBottomEnd="30dp"
         app:boxCornerRadiusBottomStart="30dp"
         app:boxCornerRadiusTopStart="30dp"
         app:boxCornerRadiusTopEnd="30dp"
 
-
+        app:boxStrokeWidth="3dp"
 
         android:layout_marginLeft="36dp"
         android:layout_marginTop="350dp"
@@ -86,11 +88,13 @@
         android:layout_width="130dp"
         android:layout_height="wrap_content"
 
-
+        android:textColorHint="@color/white"
         app:boxCornerRadiusBottomEnd="30dp"
         app:boxCornerRadiusBottomStart="30dp"
         app:boxCornerRadiusTopStart="30dp"
         app:boxCornerRadiusTopEnd="30dp"
+
+        app:boxStrokeWidth="3dp"
 
         android:layout_marginStart="205dp"
         android:layout_marginLeft="40dp"
@@ -112,13 +116,16 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/set"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textinput"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="269dp"
+        android:layout_marginEnd="100dp"
+        android:textColorHint="@color/white"
         android:hint="Set"
-        android:textSize="26dp"
-        android:layout_alignParentBottom="true"
-        />
+        android:textSize="26dp" />
 
 </RelativeLayout>
