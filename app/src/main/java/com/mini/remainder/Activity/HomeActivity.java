@@ -3,10 +3,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -24,10 +26,10 @@ import java.util.List;
 
 public class HomeActivity extends MainActivity implements NoteClickListenter {
 
-    RecyclerView recyclerView;
-    List<String> mTitle = new ArrayList();
-    List<String> mDate = new ArrayList();
-    List<String> mId = new ArrayList();
+   private RecyclerView recyclerView;
+   private List<String> mTitle = new ArrayList();
+   private List<String> mDate = new ArrayList();
+   private List<String> mId = new ArrayList();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -37,32 +39,19 @@ public class HomeActivity extends MainActivity implements NoteClickListenter {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         FloatingActionButton add = (FloatingActionButton) findViewById(R.id.add);
         recyclerView = findViewById(R.id.list);
-
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         Refresh_Feed();
-
-
-
-
-        /*
-        ImageView a=(ImageView)findViewById(R.id.image_empty) ;
-        gridView.setEmptyView(a);
-
-
- */
-
-           /* ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, a);
-            l.setAdapter(arrayAdapter);
-            ImageView a=(ImageView)findViewById(R.id.image_empty) ;
-            l.setEmptyView(a);
-
-            */
+        Check_Notification_Settings();
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
 
             public void onClick(View view) {
+
+
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
+                overridePendingTransition(R.anim.fade_in,R.anim.anim_scale_out);
             }
         });
     }
@@ -95,12 +84,11 @@ public class HomeActivity extends MainActivity implements NoteClickListenter {
 
     @Override
     public void onClick(String Title, String date, String id) {
-        Toast.makeText(this, Title, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, date, Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, EditActivity.class);
+         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra("id", id);
         intent.putExtra("title", Title);
         startActivity(intent);
+        overridePendingTransition(R.anim.fade_in,R.anim.anim_scale_out);
 
     }
 
@@ -121,6 +109,10 @@ public class HomeActivity extends MainActivity implements NoteClickListenter {
         cancel(Integer.parseInt(requestid));
         getDb().delete(position);
         Refresh_Feed();
+
+    }
+    public void sendOnChannel1(View v) {
+
 
     }
 }

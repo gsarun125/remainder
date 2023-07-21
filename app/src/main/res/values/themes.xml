@@ -8,5 +8,12 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">100%</item>
     </style>
+
+    <style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowEnterAnimation">@anim/anim_scale_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_scale_out</item>
+        <item name="colorAccent">@color/color1</item>
+    </style>
+
     <style name="Theme.Remainder" parent="Base.Theme.Remainder" />
 </resources>

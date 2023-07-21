@@ -1,14 +1,12 @@
 package com.mini.remainder.DataBase
 
-import android.R.string
+
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 
 
 val DATABASENAME = "MY DATABASE"

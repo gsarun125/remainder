@@ -1,16 +1,24 @@
 package com.mini.remainder.Activity
 
+
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -59,6 +67,26 @@ open class MainActivity : AppCompatActivity(){
         setContentView(binding.root)
         insert()
     }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.anim_scale_in,R.anim.anim_scale_out)
+    }
+
+    open fun Check_Notification_Settings() {
+        val notificationManager = NotificationManagerCompat.from(this)
+        if (!notificationManager.areNotificationsEnabled()) {
+            openNotificationSettings()
+            return
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isChannelBlocked(NOTIFICATION_CHANNEL_ID)
+        ) {
+            openChannelSettings(NOTIFICATION_CHANNEL_ID)
+            return
+        }
+    }
+
+
     private  fun  insert(){
 
 
@@ -148,6 +176,8 @@ open class MainActivity : AppCompatActivity(){
             val Title:String=binding.alertTitle.getText().toString()
 
 
+
+
             println(Title)
             println(D)
             println(M)
@@ -167,7 +197,7 @@ open class MainActivity : AppCompatActivity(){
 
 
                 var random = Random()
-                var Request_ID=random.nextInt(50)
+                var Request_ID=random.nextInt(10000000)
 
                 db.insertData(Title,time,Request_ID)
 
@@ -187,9 +217,9 @@ open class MainActivity : AppCompatActivity(){
 
     }
 
-    @SuppressLint("RemoteViewLayout")
 
-    private fun getNotification(title:String,Request_ID:Int): Notification {
+    fun getNotification(title:String,Request_ID:Int): Notification {
+
 
 
         println(Request_ID);
@@ -210,8 +240,42 @@ open class MainActivity : AppCompatActivity(){
         builder.setAutoCancel( true )
         builder.setChannelId( NOTIFICATION_CHANNEL_ID )
         builder.setContentIntent(pendingIntent)
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        builder.setGroup("Schedule")
+        builder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
         builder.setContent(contentView)
         return builder.build()
+
+    }
+
+    public fun openNotificationSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            var intent=Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE,packageName)
+            startActivity(intent)
+        }else
+        {
+            var  intent=Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:"+packageName))
+            startActivity(intent)
+        }
+
+    }
+
+
+    fun openChannelSettings(channelID:String){
+        val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+        intent.putExtra(Settings.EXTRA_CHANNEL_ID, channelID)
+        startActivity(intent)
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun isChannelBlocked(channel1Id: String): Boolean {
+        val manager = getSystemService(NotificationManager::class.java)
+        val channel = manager.getNotificationChannel(channel1Id)
+
+        return channel != null &&
+                channel.importance == NotificationManager.IMPORTANCE_NONE
 
     }
 
