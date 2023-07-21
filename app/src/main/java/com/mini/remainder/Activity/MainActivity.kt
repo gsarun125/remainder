@@ -1,16 +1,24 @@
 package com.mini.remainder.Activity
 
+
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -24,6 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.Random
 
 
 open class MainActivity : AppCompatActivity(){
@@ -58,6 +67,26 @@ open class MainActivity : AppCompatActivity(){
         setContentView(binding.root)
         insert()
     }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.anim_scale_in,R.anim.anim_scale_out)
+    }
+
+    open fun Check_Notification_Settings() {
+        val notificationManager = NotificationManagerCompat.from(this)
+        if (!notificationManager.areNotificationsEnabled()) {
+            openNotificationSettings()
+            return
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isChannelBlocked(NOTIFICATION_CHANNEL_ID)
+        ) {
+            openChannelSettings(NOTIFICATION_CHANNEL_ID)
+            return
+        }
+    }
+
+
     private  fun  insert(){
 
 
@@ -113,11 +142,31 @@ open class MainActivity : AppCompatActivity(){
                 else
                     timePicker.hour
                 val time="${hour}:${minute}"
+                val datetime = Calendar.getInstance()
+                val c = Calendar.getInstance()
+                if (D!=0 && M!=0 && Y!=0) {
+                    datetime[Calendar.DATE] = D
+                    datetime[Calendar.MONTH] = M - 1
+                    datetime[Calendar.YEAR] = Y
+                    datetime[Calendar.HOUR_OF_DAY] = hour.toString().toInt()
+                    datetime[Calendar.MINUTE] = minute.toString().toInt()
 
-                H=hour.toString().toInt()
-                Min=minute.toString().toInt()
+                if (datetime.getTimeInMillis() >= c.getTimeInMillis()) {
 
-                binding.time.editText?.setText(time)
+                    H = hour.toString().toInt()
+                    Min = minute.toString().toInt()
+                    binding.time.editText?.setText(time)
+
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Invalid Time", Toast.LENGTH_LONG).show();
+                }
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Enter the Date", Toast.LENGTH_LONG).show();
+                }
 
             }
             timePicker.show(supportFragmentManager, null)
@@ -125,6 +174,8 @@ open class MainActivity : AppCompatActivity(){
         }
         binding.set.setOnClickListener {
             val Title:String=binding.alertTitle.getText().toString()
+
+
 
 
             println(Title)
@@ -136,9 +187,24 @@ open class MainActivity : AppCompatActivity(){
 
             if (D!=0 && M!=0 && Y!=0 && (H!=0 || Min!=0))
             {
-                set(getNotification(Title),D,M,Y,H,Min)
+                val calender=Calendar.getInstance()
+                println(D)
+                println(M)
+                println(Y)
+                calender.set(Y,M-1,D,H,Min)
+                time = calender.getTimeInMillis() - calender.getTimeInMillis() % 60000
+                println(calender.getTimeInMillis())
 
-                db.insertData(Title,time)
+
+                var random = Random()
+                var Request_ID=random.nextInt(10000000)
+
+                db.insertData(Title,time,Request_ID)
+
+                println(Request_ID)
+                set(getNotification(Title,Request_ID),time,Request_ID)
+
+
 
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
@@ -151,14 +217,17 @@ open class MainActivity : AppCompatActivity(){
 
     }
 
-    @SuppressLint("RemoteViewLayout")
-    private fun getNotification(title:String): Notification {
+
+    fun getNotification(title:String,Request_ID:Int): Notification {
 
 
+
+        println(Request_ID);
 
         val intent = Intent(this, ShowActivity::class.java)
         intent.putExtra("a",title)
-        val pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(this, Request_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
 
         var contentView = RemoteViews(packageName, R.layout.notify)
         contentView.setImageViewResource(R.id.image, R.drawable.pic)
@@ -171,30 +240,56 @@ open class MainActivity : AppCompatActivity(){
         builder.setAutoCancel( true )
         builder.setChannelId( NOTIFICATION_CHANNEL_ID )
         builder.setContentIntent(pendingIntent)
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        builder.setGroup("Schedule")
+        builder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
         builder.setContent(contentView)
         return builder.build()
 
     }
 
-    fun set(a:Notification,D:Int,M:Int,Y:Int,H:Int,Min: Int){
-        val calender=Calendar.getInstance()
-        println(D)
-        println(M)
-        println(Y)
+    public fun openNotificationSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            var intent=Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE,packageName)
+            startActivity(intent)
+        }else
+        {
+            var  intent=Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:"+packageName))
+            startActivity(intent)
+        }
 
-        calender.set(Y,M-1,D,H,Min)
+    }
 
-        time = calender.getTimeInMillis() - calender.getTimeInMillis() % 60000
-        println(calender.getTimeInMillis())
 
+    fun openChannelSettings(channelID:String){
+        val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+        intent.putExtra(Settings.EXTRA_CHANNEL_ID, channelID)
+        startActivity(intent)
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun isChannelBlocked(channel1Id: String): Boolean {
+        val manager = getSystemService(NotificationManager::class.java)
+        val channel = manager.getNotificationChannel(channel1Id)
+
+        return channel != null &&
+                channel.importance == NotificationManager.IMPORTANCE_NONE
+
+    }
+
+    fun set(a:Notification,time:Long,Request_ID: Int){
+
+        println(Request_ID);
 
 
         alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AlertReceiver::class.java)
         intent.putExtra(AlertReceiver. NOTIFICATION_ID , 1 )
         intent.putExtra(AlertReceiver. NOTIFICATION , a)
-        pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_IMMUTABLE)
-        alarmManager!!.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+        pendingIntent = PendingIntent.getBroadcast(this,Request_ID , intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManager!!.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
 
 
         val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa")
@@ -204,17 +299,13 @@ open class MainActivity : AppCompatActivity(){
 
 
     }
-
-
-    fun Date.format(i:Int ): String {
-
-        if (i==0)
-            return SimpleDateFormat("dd/MM/yyyy").format(this)
-        else if (i==1)
-            return SimpleDateFormat("dd").format(this)
-        else if(i==2)
-            return SimpleDateFormat("MM").format(this)
-        else
-            return SimpleDateFormat("yyyy").format(this)
+    fun cancel(Request_ID: Int) {
+        println(Request_ID)
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val myIntent = Intent(applicationContext, AlertReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(applicationContext, Request_ID, myIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManager.cancel(pendingIntent)
     }
+
+
 }

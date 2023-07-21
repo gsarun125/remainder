@@ -1,14 +1,12 @@
 package com.mini.remainder.DataBase
 
-import android.R.string
+
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 
 
 val DATABASENAME = "MY DATABASE"
@@ -16,11 +14,12 @@ val TABLENAME = "Users"
 val COL_TITLE = "title"
 val COL_DATE = "date"
 val COL_ID = "id"
+val COL_REQUESTID="requestid"
 class DataBaseHandler(var context: Context) : SQLiteOpenHelper(context, DATABASENAME, null,
     1) {
     override fun onCreate(db: SQLiteDatabase?) {
         val createTable =
-            "CREATE TABLE " + TABLENAME + " (" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_TITLE + " VARCHAR(1000)," + COL_DATE + " VARCHAR(1000))"
+            "CREATE TABLE " + TABLENAME + " (" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_TITLE + " VARCHAR(1000)," + COL_DATE + " VARCHAR(1000)," + COL_REQUESTID + " INTEGER)"
         db?.execSQL(createTable)
     }
 
@@ -28,12 +27,13 @@ class DataBaseHandler(var context: Context) : SQLiteOpenHelper(context, DATABASE
         //onCreate(db);
     }
 
-    fun insertData( title: String, date: Long) {
+    fun insertData( title: String, date: Long,requestID:Int) {
         val database = this.writableDatabase
         val contentValues = ContentValues()
 
         contentValues.put(COL_TITLE, title)
         contentValues.put(COL_DATE, date)
+        contentValues.put(COL_REQUESTID, requestID)
         val result = database.insert(TABLENAME, null, contentValues)
         if (result == (0).toLong()) {
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
@@ -49,6 +49,13 @@ class DataBaseHandler(var context: Context) : SQLiteOpenHelper(context, DATABASE
         return db.rawQuery(query, null)
     }
 
+
+    fun GetRequestID(id: String): Cursor? {
+
+        val db = this.writableDatabase
+        val  query="SELECT * FROM $TABLENAME WHERE $COL_ID=$id;"
+        return db.rawQuery(query, null)
+    }
     fun delete(id: String) {
 
         val db = this.writableDatabase
@@ -58,16 +65,11 @@ class DataBaseHandler(var context: Context) : SQLiteOpenHelper(context, DATABASE
     }
     fun update(original: String, id: String, newtitle: String) {
 
-        // calling a method to get writable database.
         val db = this.writableDatabase
         val values = ContentValues()
 
-        // on below line we are passing all values
-        // along with its key and value pair.
         values.put(COL_TITLE, newtitle)
 
-        // on below line we are calling a update method to update our database and passing our values.
-        // and we are comparing it with name of our course which is stored in original name variable.
         db.update(TABLENAME, values, "id=?", arrayOf<String>(id))
         db.close()
     }

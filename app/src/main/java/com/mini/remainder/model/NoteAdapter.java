@@ -62,7 +62,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
                 id.clear();
                 date.clear();
                 listenter. OnLongClick(i);
-
                 return true;
             }
         });
@@ -125,12 +124,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         this.title = title;
         this.date = date;
         this.id=id;
+
     }
 
     Context context;
     List<String> title = new ArrayList();
     List<String> date = new ArrayList();
     List<String> id = new ArrayList();
+
 
 
 }

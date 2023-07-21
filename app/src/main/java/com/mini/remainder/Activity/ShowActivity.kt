@@ -19,7 +19,7 @@ class ShowActivity : AppCompatActivity() {
 
         val i = intent
         val a = i.getStringExtra("a")
-        binding.textView.text =a
+        binding.textView.setText(a)
 
         binding.back.setOnClickListener {
             val i=Intent(this,HomeActivity::class.java)

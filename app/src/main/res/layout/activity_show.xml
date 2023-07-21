@@ -8,23 +8,58 @@
     tools:context=".Activity.ShowActivity">
 
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="324dp"
-        android:layout_height="292dp"
-        android:maxLines="8"
-        android:textSize="20dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="45dp"
-        />
+        android:layout_below="@+id/textView2"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="29dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="36dp"
+
+
+        android:background="@drawable/show1"
+        app:boxCornerRadiusBottomEnd="40dp"
+        app:boxCornerRadiusBottomStart="40dp"
+        app:boxCornerRadiusTopEnd="40dp"
+        app:boxCornerRadiusTopStart="40dp"
+        app:boxStrokeWidth="3dp">
+
+
+        <EditText
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="11dp"
+            android:layout_marginEnd="11dp"
+            android:layout_marginBottom="11dp"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="true"
+            android:gravity="fill_horizontal"
+
+            android:inputType="none"
+            android:maxWidth="440dp"
+            android:maxHeight="400dp"
+            android:minWidth="640dp"
+            android:minHeight="360dp"
+
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="362dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="52dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="20dp"
         android:maxLines="1"
         android:text="Your Reminder"
         android:textColor="#7759C1"
@@ -37,12 +72,12 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/back"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
         android:hint="back"
-        android:textSize="26dp"
-        android:layout_alignParentBottom="true"
-        />
+        android:textColorHint="@color/white"
+        android:textSize="26dp" />
 </RelativeLayout>
