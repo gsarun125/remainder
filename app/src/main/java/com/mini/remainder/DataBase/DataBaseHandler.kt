@@ -42,9 +42,10 @@ class DataBaseHandler(var context: Context) : SQLiteOpenHelper(context, DATABASE
         }
     }
 
-    fun getData(): Cursor? {
+    fun getData(Current_Time:String): Cursor? {
         val db = this.writableDatabase
-        val query = "SELECT * FROM $TABLENAME ORDER BY $COL_DATE ASC;"
+        val query = "SELECT  * FROM $TABLENAME WHERE $COL_DATE > $Current_Time ORDER BY $COL_DATE ASC;"
+
 
         return db.rawQuery(query, null)
     }
