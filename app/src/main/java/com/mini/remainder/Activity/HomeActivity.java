@@ -3,20 +3,17 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.mini.remainder.databinding.ActivityHomeBinding;
 import com.mini.remainder.model.NoteClickListenter;
 import com.mini.remainder.R;
 import com.mini.remainder.model.NoteAdapter;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,12 +27,14 @@ public class HomeActivity extends MainActivity implements NoteClickListenter {
    private List<String> mTitle = new ArrayList();
    private List<String> mDate = new ArrayList();
    private List<String> mId = new ArrayList();
+   ActivityHomeBinding binding;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         FloatingActionButton add = (FloatingActionButton) findViewById(R.id.add);
         recyclerView = findViewById(R.id.list);
@@ -58,11 +57,15 @@ public class HomeActivity extends MainActivity implements NoteClickListenter {
     }
 
 
-    public void Refresh_Feed() {
+        public void Refresh_Feed() {
 
         DateFormat obj = new SimpleDateFormat("dd/MM/yyyy hh:mm aa");
+            long time= System.currentTimeMillis();
 
-        Cursor c1 = getDb().getData();
+         String current_time;
+         current_time= String.valueOf(time-time%60000);
+         System.out.println("current"+current_time);
+        Cursor c1 = getDb().getData(current_time);
         if (c1.moveToFirst()) {
             do {
                 @SuppressLint("Range") String data2 = c1.getString(c1.getColumnIndex("id"));
