@@ -1,7 +1,6 @@
 package com.mini.remainder.Activity
 
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationManager
@@ -12,7 +11,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -67,7 +65,6 @@ open class MainActivity : AppCompatActivity(){
         setContentView(binding.root)
         insert()
     }
-
     override fun finish() {
         super.finish()
         overridePendingTransition(R.anim.anim_scale_in,R.anim.anim_scale_out)
@@ -87,14 +84,8 @@ open class MainActivity : AppCompatActivity(){
     }
 
 
+
     private  fun  insert(){
-
-
-      ///  materialDatePicker.addOnPositiveButtonClickListener(
-         ///   MaterialPickerOnPositiveButtonClickListener<Any?> { // now update the selected date preview
-            ///    mShowSelectedDateText.setText("Selected Date is : " + materialDatePicker.getHeaderText())
-            //})
-
 
         binding.date.editText?.setOnClickListener {
 
@@ -205,9 +196,9 @@ open class MainActivity : AppCompatActivity(){
                 set(getNotification(Title,Request_ID),time,Request_ID)
 
 
-
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
+                finish();
 
             }
             else{
@@ -305,6 +296,11 @@ open class MainActivity : AppCompatActivity(){
         val myIntent = Intent(applicationContext, AlertReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(applicationContext, Request_ID, myIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(pendingIntent)
+    }
+    override fun onBackPressed() {
+        val i = Intent(this, HomeActivity::class.java)
+        startActivity(i)
+        finish()
     }
 
 

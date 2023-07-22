@@ -63,13 +63,19 @@ public class EditActivity extends MainActivity {
 
                 set(getNotification(newTitle,Request_ID),time,Request_ID);
 
-
                 Intent intent=new Intent(EditActivity.this,HomeActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.fade_in,R.anim.anim_scale_out);
-
+               finish();
             }
         });
 
     }
+    @Override
+    public void onBackPressed() {
+        Intent i=new Intent(this,HomeActivity.class);
+        startActivity(i);
+        finish();
+    }
+
 }

@@ -52,9 +52,11 @@ public class HomeActivity extends MainActivity implements NoteClickListenter {
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
                 overridePendingTransition(R.anim.fade_in,R.anim.anim_scale_out);
+                HomeActivity.super.finish();
             }
         });
     }
+
 
     public void Refresh_Feed() {
 
@@ -89,7 +91,7 @@ public class HomeActivity extends MainActivity implements NoteClickListenter {
         intent.putExtra("title", Title);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in,R.anim.anim_scale_out);
-
+        HomeActivity.super.finish();
     }
 
     @SuppressLint("Range")
@@ -111,8 +113,9 @@ public class HomeActivity extends MainActivity implements NoteClickListenter {
         Refresh_Feed();
 
     }
-    public void sendOnChannel1(View v) {
 
-
+    @Override
+    public void onBackPressed() {
+        HomeActivity.super.finish();
     }
 }
