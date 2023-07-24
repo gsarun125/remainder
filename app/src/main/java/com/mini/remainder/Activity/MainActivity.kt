@@ -221,7 +221,7 @@ open class MainActivity : AppCompatActivity(){
 
 
         var contentView = RemoteViews(packageName, R.layout.notify)
-        contentView.setImageViewResource(R.id.image, R.drawable.pic)
+        contentView.setImageViewResource(R.id.image, R.drawable.app_icon)
         contentView.setTextViewText(R.id.title, "Scheduled Notification")
         contentView.setTextViewText(R.id.text, "$title")
 
